@@ -1,5 +1,10 @@
 import Appointment from '../entities/Appointment'
 
+interface ICreateAppointmentDTO {
+  provider: string
+  date: Date
+}
+
 class AppointmentRepository {
   private appointments: Appointment[]
 
@@ -11,8 +16,11 @@ class AppointmentRepository {
     return this.appointments
   }
 
-  create(provider: string, date: Date) {
-    const appointment = new Appointment(provider, date)
+  create({ provider, date }: ICreateAppointmentDTO) {
+    const appointment = new Appointment({
+      provider,
+      date,
+    })
 
     this.appointments.push(appointment)
 

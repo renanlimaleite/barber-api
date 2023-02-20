@@ -19,7 +19,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
 
     const appointments = appointmentRepository.all()
 
-    const findAppointmentInSameDate = Appointment.findByDate(
+    const findAppointmentInSameDate = Appointment.findAppointmentInSameDate(
       appointments,
       parsedDate,
     )
@@ -30,7 +30,10 @@ export async function appointmentsRoutes(app: FastifyInstance) {
         .send({ error: 'This appointment is already booked' })
     }
 
-    appointmentRepository.create(provider, parsedDate)
+    appointmentRepository.create({
+      provider,
+      date: parsedDate,
+    })
 
     return reply.status(201).send()
   })
