@@ -1,5 +1,6 @@
+import { randomUUID } from 'crypto'
 import { isEqual } from 'date-fns'
-import Appointment from '../entities/Appointment'
+import { Appointment } from '../entities/Appointment'
 
 interface ICreateAppointmentDTO {
   provider: string
@@ -18,10 +19,11 @@ class AppointmentRepository {
   }
 
   create({ provider, date }: ICreateAppointmentDTO) {
-    const appointment = new Appointment({
+    const appointment: Appointment = {
+      id: randomUUID(),
       provider,
       date,
-    })
+    }
 
     this.appointments.push(appointment)
 
