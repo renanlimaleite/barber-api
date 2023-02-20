@@ -9,7 +9,7 @@ app.register(appointmentsRoutes, {
 
 const start = async () => {
   try {
-    await app.listen({ port: 4444 })
+    await app.listen({ port: 8000, host: '0.0.0.0' })
     console.log('App running...')
   } catch (err) {
     app.log.error(err)
