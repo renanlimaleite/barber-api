@@ -1,8 +1,15 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { randomUUID } from 'node:crypto'
+import { startOfHour, parseISO, isEqual } from 'date-fns'
 
-const appointments = []
+type appointmentType = {
+  id: string
+  provider: string
+  date: Date
+}
+
+const appointments: appointmentType[] = []
 
 export async function appointmentsRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
@@ -13,10 +20,21 @@ export async function appointmentsRoutes(app: FastifyInstance) {
 
     const { provider, date } = createAppointmentBodySchema.parse(request.body)
 
+    const parsedDate = startOfHour(parseISO(date))
+    const findAppointmentInSameDate = appointments.find((appointment) =>
+      isEqual(parsedDate, appointment.date),
+    )
+
+    if (findAppointmentInSameDate) {
+      return reply
+        .status(401)
+        .send({ error: 'This appointment is already booked' })
+    }
+
     const appointment = {
       id: randomUUID(),
       provider,
-      date,
+      date: parsedDate,
     }
 
     appointments.push(appointment)
