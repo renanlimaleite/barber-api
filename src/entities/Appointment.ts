@@ -13,10 +13,6 @@ class Appointment {
     this.provider = provider
     this.date = date
   }
-
-  static findAppointmentInSameDate(appointments: Appointment[], date: Date) {
-    return appointments.find((appointment) => isEqual(date, appointment.date))
-  }
 }
 
 export default Appointment

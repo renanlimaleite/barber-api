@@ -1,5 +1,4 @@
 import { startOfHour } from 'date-fns'
-import Appointment from '../entities/Appointment'
 import AppointmentRepository from '../repositories/AppointmentRepository'
 
 interface IRequestDTO {
@@ -24,12 +23,8 @@ class CreateAppointmentService {
   public execute({ provider, date }: IRequestDTO) {
     const appointmentDate = startOfHour(date)
 
-    const appointments = this.appointmentsRepository.all()
-
-    const findAppointmentInSameDate = Appointment.findAppointmentInSameDate(
-      appointments,
-      appointmentDate,
-    )
+    const findAppointmentInSameDate =
+      this.appointmentsRepository.findByDate(appointmentDate)
 
     if (findAppointmentInSameDate) {
       throw Error('This appointment is already booked')
