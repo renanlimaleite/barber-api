@@ -1,4 +1,3 @@
-import { isEqual } from 'date-fns'
 import { randomUUID } from 'node:crypto'
 
 class Appointment {
