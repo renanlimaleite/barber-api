@@ -1,41 +1,38 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { startOfHour, parseISO } from 'date-fns'
+import { parseISO } from 'date-fns'
 import AppointmentRepository from '../repositories/AppointmentRepository'
-import Appointment from '../entities/Appointment'
+import CreateAppointmentService from '../services/CreateAppointmentService'
 
 const appointmentRepository = new AppointmentRepository()
+const createAppointmentService = new CreateAppointmentService(
+  appointmentRepository,
+)
 
 export async function appointmentsRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
-    const createAppointmentBodySchema = z.object({
-      provider: z.string(),
-      date: z.string().datetime(),
-    })
+    try {
+      const createAppointmentBodySchema = z.object({
+        provider: z.string(),
+        date: z.string().datetime(),
+      })
 
-    const { provider, date } = createAppointmentBodySchema.parse(request.body)
+      const { provider, date } = createAppointmentBodySchema.parse(request.body)
 
-    const parsedDate = startOfHour(parseISO(date))
+      const parsedDate = parseISO(date)
 
-    const appointments = appointmentRepository.all()
+      createAppointmentService.execute({
+        provider,
+        date: parsedDate,
+      })
 
-    const findAppointmentInSameDate = Appointment.findAppointmentInSameDate(
-      appointments,
-      parsedDate,
-    )
-
-    if (findAppointmentInSameDate) {
-      return reply
-        .status(401)
-        .send({ error: 'This appointment is already booked' })
+      return reply.status(201).send()
+    } catch (err) {
+      if (err instanceof Error) {
+        return reply.status(400).send({ error: err.message })
+      }
+      return reply.status(500).send({ error: 'Internal server error' })
     }
-
-    appointmentRepository.create({
-      provider,
-      date: parsedDate,
-    })
-
-    return reply.status(201).send()
   })
 
   app.get('/', async (_, reply) => {
