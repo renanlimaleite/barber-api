@@ -17,7 +17,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
 
     const parsedDate = startOfHour(parseISO(date))
 
-    const appointments = appointmentRepository.getAppointments()
+    const appointments = appointmentRepository.all()
 
     const findAppointmentInSameDate = Appointment.findByDate(
       appointments,
@@ -33,5 +33,11 @@ export async function appointmentsRoutes(app: FastifyInstance) {
     appointmentRepository.create(provider, parsedDate)
 
     return reply.status(201).send()
+  })
+
+  app.get('/', async (_, reply) => {
+    const appointments = appointmentRepository.all()
+
+    return reply.send(appointments)
   })
 }

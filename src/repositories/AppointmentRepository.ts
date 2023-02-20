@@ -7,7 +7,7 @@ class AppointmentRepository {
     this.appointments = []
   }
 
-  getAppointments() {
+  all() {
     return this.appointments
   }
 
