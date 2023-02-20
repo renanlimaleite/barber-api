@@ -1,15 +1,9 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { randomUUID } from 'node:crypto'
 import { startOfHour, parseISO, isEqual } from 'date-fns'
+import Appointment from '../entities/Appointment'
 
-type appointmentType = {
-  id: string
-  provider: string
-  date: Date
-}
-
-const appointments: appointmentType[] = []
+const appointments: Appointment[] = []
 
 export async function appointmentsRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
@@ -31,11 +25,7 @@ export async function appointmentsRoutes(app: FastifyInstance) {
         .send({ error: 'This appointment is already booked' })
     }
 
-    const appointment = {
-      id: randomUUID(),
-      provider,
-      date: parsedDate,
-    }
+    const appointment = new Appointment(provider, parsedDate)
 
     appointments.push(appointment)
 
