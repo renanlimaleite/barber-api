@@ -1,6 +1,8 @@
 import fastify from 'fastify'
 import { appointmentsRoutes } from './routes/appointments.routes'
 
+import './database/typeorm'
+
 const app = fastify({ logger: false })
 
 app.register(appointmentsRoutes, {
