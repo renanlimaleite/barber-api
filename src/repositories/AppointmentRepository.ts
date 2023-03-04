@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 import { isEqual } from 'date-fns'
-import { Appointment } from '../entities/Appointment'
+import Appointment from '../entities/Appointment'
 
 interface ICreateAppointmentDTO {
   provider: string
